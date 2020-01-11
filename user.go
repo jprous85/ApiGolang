@@ -52,10 +52,11 @@ func create(writer http.ResponseWriter, r *http.Request) {
 		DeletedAt:       nil,
 	})
 
-	if result.Error != nil {
+	if result.Error == nil {
 		json.NewEncoder(writer).Encode(map[string]string{"data": "ok"})
+	} else {
+		json.NewEncoder(writer).Encode(map[string]string{"data": "ko"})
 	}
-	json.NewEncoder(writer).Encode(map[string]string{"data": "ko"})
 }
 
 func update(writer http.ResponseWriter, request *http.Request) {
@@ -78,10 +79,11 @@ func update(writer http.ResponseWriter, request *http.Request) {
 		UpdatedAt:       time.Now().UTC(),
 	})
 
-	if result.Error != nil {
+	if result.Error == nil {
 		json.NewEncoder(writer).Encode(map[string]string{"data": "ok"})
+	} else {
+		json.NewEncoder(writer).Encode(map[string]string{"data": "ko"})
 	}
-	json.NewEncoder(writer).Encode(map[string]string{"data": "ko"})
 }
 
 func delete(writer http.ResponseWriter, request *http.Request) {
@@ -91,8 +93,9 @@ func delete(writer http.ResponseWriter, request *http.Request) {
 
 	result := db.Where("id = ?", id).Unscoped().Delete(&user)
 
-	if result.Error != nil {
+	if result.Error == nil {
 		json.NewEncoder(writer).Encode(map[string]string{"data": "ok"})
+	} else {
+		json.NewEncoder(writer).Encode(map[string]string{"data": "ko"})
 	}
-	json.NewEncoder(writer).Encode(map[string]string{"data": "ko"})
 }
