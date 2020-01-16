@@ -37,7 +37,6 @@ func show(writer http.ResponseWriter, request *http.Request) {
 }
 
 func create(writer http.ResponseWriter, r *http.Request) {
-
 	var u User
 	err := json.NewDecoder(r.Body).Decode(&u)
 
