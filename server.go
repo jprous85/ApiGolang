@@ -1,10 +1,10 @@
 package main
 
 import (
-	"log"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	"log"
 )
 
 func connect() *gorm.DB {

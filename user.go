@@ -37,20 +37,19 @@ func show(writer http.ResponseWriter, request *http.Request) {
 
 func create(writer http.ResponseWriter, r *http.Request) {
 
-	r.ParseForm()
+	var u User
+	err := json.NewDecoder(r.Body).Decode(&u)
 
-	name := r.FormValue("name")
-	firstLastName := r.FormValue("first_last_name")
-	email := r.FormValue("email")
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-	result := db.Create(&User{
-		Name:            name,
-		First_last_name: firstLastName,
-		Email:           email,
-		CreatedAt:       time.Now().UTC(),
-		UpdatedAt:       time.Now().UTC(),
-		DeletedAt:       nil,
-	})
+	u.CreatedAt = time.Now().UTC()
+	u.UpdatedAt = time.Now().UTC()
+	u.DeletedAt = nil
+
+	result := db.Create(&u)
 
 	if result.Error == nil {
 		json.NewEncoder(writer).Encode(map[string]string{"data": "ok"})
@@ -60,24 +59,20 @@ func create(writer http.ResponseWriter, r *http.Request) {
 }
 
 func update(writer http.ResponseWriter, request *http.Request) {
+
 	vars := mux.Vars(request)
 	id := vars["id"]
 
-	var user User
-	db.Where("id = ?", id).Find(&user)
+	var u User
+	err := json.NewDecoder(request.Body).Decode(&u)
 
-	request.ParseForm()
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-	name := request.FormValue("name")
-	firstLastName := request.FormValue("first_last_name")
-	email := request.FormValue("email")
-
-	result := db.Model(&user).Where("id = ?", id).Update(&User{
-		Name:            name,
-		First_last_name: firstLastName,
-		Email:           email,
-		UpdatedAt:       time.Now().UTC(),
-	})
+	u.UpdatedAt = time.Now().UTC()
+	result := db.Model(&u).Where("id = ?", id).Update(&u)
 
 	if result.Error == nil {
 		json.NewEncoder(writer).Encode(map[string]string{"data": "ok"})
@@ -87,6 +82,7 @@ func update(writer http.ResponseWriter, request *http.Request) {
 }
 
 func delete(writer http.ResponseWriter, request *http.Request) {
+
 	vars := mux.Vars(request)
 	id := vars["id"]
 	var user User
