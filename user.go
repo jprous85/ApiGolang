@@ -12,6 +12,7 @@ import (
 var db = connect()
 
 type User struct {
+	Id              int        `json:"id"`
 	Name            string     `json:"name"`
 	First_last_name string     `json:"first_last_name"`
 	Email           string     `json:"email"`
